@@ -1,0 +1,16 @@
+{
+  "name": "ss-portfolio-monitor",
+  "version": "1.0.0",
+  "description": "篮子交易（量化软件）",
+  "main": "src/main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@192.168.15.201:chenlei/ss-portfolio-monitor.git"
+  },
+  "author": "Easier",
+  "license": "MIT",
+  "devDependencies": {}
+}
