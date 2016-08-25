@@ -3,7 +3,7 @@ import net = require('net');
 /**
  * TcpClient is
  */
-export default class TcpClient {
+export class TcpClient {
     sock_: net.Socket;
     resolver_: IResolver;
     /**
