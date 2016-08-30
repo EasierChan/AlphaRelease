@@ -3,8 +3,10 @@
         "target": "es5",
         "module": "commonjs",
         "sourceMap": true,
-        "allowJs": true,
         "removeComments": false
     },
-    "compileOnSave": true
+    "compileOnSave": true,
+    "exclude":[
+        "electron_main.js"
+    ]
 }
