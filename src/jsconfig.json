@@ -5,7 +5,8 @@
     },
     "files": [
         "electron_main.js",
-        "common/typings/globals/node/index.d.ts"
+        "common/typings/globals/node/index.d.ts",
+        "common/typings/globals/github-electron/index.d.ts"
     ],
     "typings": "common/typings/"
 }

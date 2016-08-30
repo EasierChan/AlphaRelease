@@ -1,5 +1,5 @@
 {
     "name"      : "ss-portfolio",
     "version"   : "0.1.0",
-    "main"      : "main.js"
+    "main"      : "electron_main.js"
 }

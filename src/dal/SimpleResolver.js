@@ -106,4 +106,3 @@ var SimpleResolver = (function (_super) {
     return SimpleResolver;
 }(events.EventEmitter));
 exports.SimpleResolver = SimpleResolver;
-//# sourceMappingURL=SimpleResolver.js.map

@@ -4,7 +4,7 @@ import {TcpClient} from './TcpClient';
 /**
  * QtpMessageClient
  */
-class QtpMessageClient extends TcpClient{
+export class QtpMessageClient extends TcpClient{
     public constructor(resolver?: SimpleResolver) {
         super(resolver);
     }
@@ -16,5 +16,3 @@ class QtpMessageClient extends TcpClient{
         super.send(data);
     }
 }
-
-export {QtpMessageClient};

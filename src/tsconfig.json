@@ -2,11 +2,8 @@
     "compilerOptions": {
         "target": "es5",
         "module": "commonjs",
-        "sourceMap": true,
+        "sourceMap": false,
         "removeComments": false
     },
-    "compileOnSave": true,
-    "exclude":[
-        "electron_main.js"
-    ]
+    "compileOnSave": true
 }

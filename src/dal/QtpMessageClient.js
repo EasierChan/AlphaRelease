@@ -21,4 +21,3 @@ var QtpMessageClient = (function (_super) {
     return QtpMessageClient;
 }(TcpClient_1.TcpClient));
 exports.QtpMessageClient = QtpMessageClient;
-//# sourceMappingURL=QtpMessageClient.js.map
