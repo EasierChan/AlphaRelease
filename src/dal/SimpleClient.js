@@ -8,16 +8,16 @@ var TcpClient_1 = require('./TcpClient');
 /**
  * QtpMessageClient
  */
-var QtpMessageClient = (function (_super) {
-    __extends(QtpMessageClient, _super);
-    function QtpMessageClient(resolver) {
+var SimpleClient = (function (_super) {
+    __extends(SimpleClient, _super);
+    function SimpleClient(resolver) {
         _super.call(this, resolver);
     }
-    QtpMessageClient.prototype.send = function (data) {
+    SimpleClient.prototype.send = function (data) {
         // TODO custom protocol to encode data.
         // send the encoded data.
         _super.prototype.send.call(this, data);
     };
-    return QtpMessageClient;
+    return SimpleClient;
 }(TcpClient_1.TcpClient));
-exports.QtpMessageClient = QtpMessageClient;
+exports.SimpleClient = SimpleClient;
