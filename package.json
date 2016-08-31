@@ -1,5 +1,5 @@
 {
-  "name": "ss-portfolio-monitor",
+  "name": "universe-ui",
   "version": "1.0.0",
   "description": "篮子交易（量化软件）",
   "main": "src/electron_main.js",
@@ -12,5 +12,7 @@
   },
   "author": "Easier",
   "license": "MIT",
-  "devDependencies": {}
+  "devDependencies": {
+    "log4js": "^0.6.38"
+  }
 }

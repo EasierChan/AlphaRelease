@@ -5,6 +5,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 var events = require('events');
+var logger_1 = require('../common/logger');
 /**
  * SimpleResover extends Resolver
  */
@@ -19,83 +20,78 @@ var SimpleResolver = (function (_super) {
         // 缓冲区初始大小 4M
         this.bufLen = 1 << 22;
         this.bufBeg = 0;
-        this.bufEnd = 0; //beg,end的取值范围在[0, 2*bufLen] 形成无琐队列
+        this.bufEnd = 0;
         // 消息格式
         this.headLen = 0;
+        this.resetBuffer(bufLen);
+    }
+    SimpleResolver.prototype.resetBuffer = function (bufLen) {
         if (bufLen) {
             if (bufLen < this.bufMiniumLen) {
+                logger_1.DefaultLogger.error('buffer minium length can\'t less than ' + this.bufMiniumLen);
                 throw Error('buffer minium length can\'t less than ' + this.bufMiniumLen);
             }
             else {
                 this.bufLen = bufLen;
             }
         }
-        this.buffer = new Buffer(this.bufLen);
-    }
-    SimpleResolver.prototype.setBufLen = function (len) {
-        this.bufLen = len;
+        this.buffer = Buffer.alloc(this.bufLen);
     };
     SimpleResolver.prototype.setHeadLen = function (len) {
         this.headLen = len;
     };
     SimpleResolver.prototype.onConnected = function (arg) {
-        console.log("connected!");
+        logger_1.DefaultLogger.trace("connected!");
     };
     SimpleResolver.prototype.onError = function (err) {
-        console.log("something error!");
-        console.log(err);
+        logger_1.DefaultLogger.trace(err);
     };
     SimpleResolver.prototype.onData = function (data) {
-        console.log("got data from server!");
-        if (data.length + this.bufEnd - this.bufBeg > this.bufLen) {
-            throw Error('more buffer length required.');
+        logger_1.DefaultLogger.trace("got data from server!");
+        // auto grow buffer to store big data unless it greater than maxlimit.
+        while (data.length + this.bufEnd > this.bufLen) {
+            logger_1.DefaultLogger.warn('more buffer length required.');
+            if ((this.bufLen << 1) > this.bufMaxiumLen) {
+                logger_1.DefaultLogger.fatal('too max buffer');
+                throw Error('too max buffer');
+            }
+            this.buffer = Buffer.concat([this.buffer, Buffer.alloc(this.bufLen)], this.bufLen << 1);
+            this.bufLen <<= 1;
         }
-        if (this.bufLen < this.bufEnd) {
-            data.copy(this.buffer, this.bufEnd - this.bufLen);
-        }
-        else {
-            data.copy(this.buffer, this.bufLen - this.bufEnd, 0, this.bufLen - this.bufEnd);
-            data.copy(this.buffer, 0, this.bufLen - this.bufEnd, data.length - (this.bufLen - this.bufEnd));
-        }
+        data.copy(this.buffer, this.bufEnd);
         this.bufEnd += data.length;
         var readLen = this.readMsg();
         while (readLen > 0) {
             this.bufBeg += readLen;
-            if (this.bufBeg >= this.bufLen) {
-                this.bufBeg -= this.bufLen;
-                this.bufEnd -= this.bufLen;
+            if (this.bufBeg > (this.bufLen >> 1)) {
+                this.bufBeg -= (this.bufLen >> 1);
+                this.bufEnd -= (this.bufLen >> 1);
             }
             readLen = this.readMsg();
         }
     };
     SimpleResolver.prototype.onEnd = function (arg) {
-        console.log("got a FIN!");
+        logger_1.DefaultLogger.info("got a FIN");
     };
     SimpleResolver.prototype.onClose = function (arg) {
-        console.log("connection closed!");
+        logger_1.DefaultLogger.info("connection closed!");
     };
     SimpleResolver.prototype.readMsg = function () {
         if (this.bufEnd < this.bufBeg + this.headLen) {
             return 0;
         }
         // read head
-        var version = this.buffer.readUInt8(this.bufBeg % this.bufLen);
-        var service = this.buffer.readUInt8((this.bufBeg + 1) % this.bufLen);
-        var msgtype = this.buffer.readUInt16LE((this.bufBeg + 2) % this.bufLen);
-        var topic = this.buffer.readUInt16LE((this.bufBeg + 4) % this.bufLen);
-        var optslen = this.buffer.readUInt16LE((this.bufBeg + 6) % this.bufLen);
-        var datalen = this.buffer.readUInt32LE((this.bufBeg + 8) % this.bufLen);
+        var version = this.buffer.readUInt8(this.bufBeg);
+        var service = this.buffer.readUInt8((this.bufBeg + 1));
+        var msgtype = this.buffer.readUInt16LE((this.bufBeg + 2));
+        var topic = this.buffer.readUInt16LE((this.bufBeg + 4));
+        var optslen = this.buffer.readUInt16LE((this.bufBeg + 6));
+        var datalen = this.buffer.readUInt32LE((this.bufBeg + 8));
         // read content
         if (this.bufEnd < this.bufBeg + this.headLen + datalen) {
             return 0;
         }
-        var content;
-        if (this.bufBeg + this.headLen < this.bufLen) {
-            content = JSON.stringify(Buffer.concat([this.buffer.slice(this.bufBeg + this.headLen, this.bufLen), this.buffer.slice(0, (this.bufBeg + this.headLen + datalen) % this.bufLen)]));
-        }
-        else {
-            content = JSON.stringify(this.buffer.slice((this.bufBeg + this.headLen) % this.bufLen, (this.bufBeg + this.headLen + datalen) % this.bufLen));
-        }
+        var content = JSON.stringify(this.buffer.slice((this.bufBeg + this.headLen), (this.bufBeg + this.headLen + datalen)));
         var temp = JSON.parse(content, function (k, v) {
             return v && v.type === 'Buffer' ? new Buffer(v.data) : v;
         });

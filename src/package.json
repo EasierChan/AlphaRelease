@@ -1,5 +1,5 @@
 {
-    "name"      : "ss-portfolio",
+    "name"      : "universe-ui",
     "version"   : "0.1.0",
     "main"      : "electron_main.js"
 }

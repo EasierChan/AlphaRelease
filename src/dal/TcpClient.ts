@@ -1,5 +1,8 @@
 import {IResolver} from './IResolver';
 import net = require('net');
+import {DefaultLogger} from '../common/logger';
+
+const localhost: string = '127.0.0.1';
 /**
  * TcpClient is
  */
@@ -15,7 +18,8 @@ export class TcpClient {
     /**
      * 连接
      */
-    connect(port: number, ip?: string): void {
+    connect(port: number, ip = localhost): void {
+        DefaultLogger.info(`start to connect to ${ip}:${port}...`);
         this.sock_ = null;
         this.sock_ = net.connect(port, ip, (e) => {
             this.resolver_.onConnected(e);
@@ -41,17 +45,17 @@ export class TcpClient {
      * 发送数据
      */
     send(data: any): void {
-        if(this.sock_.writable){
+        if (this.sock_.writable) {
             this.sock_.write(data);
             return;
         }
-        throw new Error('connection is not writable.');
+        DefaultLogger.error('connection is not writable.');
     }
     /**
      * 关闭连接
      */
-    close():void{
-        if(this.sock_.writable){
+    close(): void {
+        if (this.sock_.writable) {
             this.sock_.end();
             return;
         }

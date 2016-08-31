@@ -1,5 +1,7 @@
 "use strict";
 var net = require('net');
+var logger_1 = require('../common/logger');
+var localhost = '127.0.0.1';
 /**
  * TcpClient is
  */
@@ -15,6 +17,8 @@ var TcpClient = (function () {
      */
     TcpClient.prototype.connect = function (port, ip) {
         var _this = this;
+        if (ip === void 0) { ip = localhost; }
+        logger_1.DefaultLogger.info("start to connect to " + ip + ":" + port + "...");
         this.sock_ = null;
         this.sock_ = net.connect(port, ip, function (e) {
             _this.resolver_.onConnected(e);
@@ -40,7 +44,7 @@ var TcpClient = (function () {
             this.sock_.write(data);
             return;
         }
-        throw new Error('connection is not writable.');
+        logger_1.DefaultLogger.error('connection is not writable.');
     };
     /**
      * 关闭连接
