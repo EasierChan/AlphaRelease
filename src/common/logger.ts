@@ -1,19 +1,19 @@
 /**
  * EasierChan 2016-08-31
  */
-
+import {Paths} from './paths';
 import log4js = require('log4js');
 
 export var DefaultLogger: log4js.Logger;
-export class TLogger {
+export class ULogger {
     static init(): void {
         log4js.configure({
             appenders: [
                 { type: 'console' },
-                { type: 'file', filename: global['userLogDir'] + '/alert.log', pattern: "-yyyy-MM-dd", category: 'alert' }
+                { type: 'file', filename: Paths.getConfigration().getLogDir() + '/alert.log', pattern: "-yyyy-MM-dd", category: 'alert' }
             ]
         });
-        DefaultLogger = TLogger.console();
+        DefaultLogger = ULogger.console();
     }
 
     static console(): log4js.Logger {

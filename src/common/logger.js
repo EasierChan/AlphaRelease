@@ -1,26 +1,27 @@
+"use strict";
 /**
  * EasierChan 2016-08-31
  */
-"use strict";
+var paths_1 = require('./paths');
 var log4js = require('log4js');
-var TLogger = (function () {
-    function TLogger() {
+var ULogger = (function () {
+    function ULogger() {
     }
-    TLogger.init = function () {
+    ULogger.init = function () {
         log4js.configure({
             appenders: [
                 { type: 'console' },
-                { type: 'file', filename: global['userLogDir'] + '/alert.log', pattern: "-yyyy-MM-dd", category: 'alert' }
+                { type: 'file', filename: paths_1.Paths.getConfigration().getLogDir() + '/alert.log', pattern: "-yyyy-MM-dd", category: 'alert' }
             ]
         });
-        exports.DefaultLogger = TLogger.console();
+        exports.DefaultLogger = ULogger.console();
     };
-    TLogger.console = function () {
+    ULogger.console = function () {
         return log4js.getLogger();
     };
-    TLogger.alert = function () {
+    ULogger.alert = function () {
         return log4js.getLogger('alert');
     };
-    return TLogger;
+    return ULogger;
 }());
-exports.TLogger = TLogger;
+exports.ULogger = ULogger;

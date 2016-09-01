@@ -2,25 +2,18 @@
 /**
  *
  */
-var fs = require('fs');
 var logger_1 = require('./logger');
-var Loader = (function () {
-    function Loader() {
+var configurator_1 = require('./configurator');
+var ULoader = (function () {
+    function ULoader() {
     }
-    Loader.init = function () {
-        global['userDir'] = process.cwd();
-        global['userLogDir'] = global['userDir'] + '/logs';
-        global['userMarketDir'] = global['userDir'] + '/marketdata';
-        if (!fs.existsSync(global['userLogDir'])) {
-            fs.mkdir(global['userLogDir']);
-        }
-        if (!fs.existsSync(global['userMarketDir'])) {
-            fs.mkdir(global['userMarketDir']);
-        }
+    ULoader.init = function () {
         // init logger
-        logger_1.TLogger.init();
+        logger_1.ULogger.init();
         logger_1.DefaultLogger.info('Program environment initialize...');
+        // init configuration
+        configurator_1.UConfig.init();
     };
-    return Loader;
+    return ULoader;
 }());
-exports.Loader = Loader;
+exports.ULoader = ULoader;

@@ -63,6 +63,7 @@ export class SimpleResolver extends events.EventEmitter implements IResolver {
 
         data.copy(this.buffer, this.bufEnd);
         this.bufEnd += data.length;
+        data = null;
 
         var readLen = this.readMsg();
         while (readLen > 0) {

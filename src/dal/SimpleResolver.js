@@ -41,10 +41,10 @@ var SimpleResolver = (function (_super) {
         this.headLen = len;
     };
     SimpleResolver.prototype.onConnected = function (arg) {
-        logger_1.DefaultLogger.trace("connected!");
+        logger_1.DefaultLogger.info("connected!");
     };
     SimpleResolver.prototype.onError = function (err) {
-        logger_1.DefaultLogger.trace(err);
+        logger_1.DefaultLogger.info(err);
     };
     SimpleResolver.prototype.onData = function (data) {
         logger_1.DefaultLogger.trace("got data from server!");
@@ -60,6 +60,7 @@ var SimpleResolver = (function (_super) {
         }
         data.copy(this.buffer, this.bufEnd);
         this.bufEnd += data.length;
+        data = null;
         var readLen = this.readMsg();
         while (readLen > 0) {
             this.bufBeg += readLen;

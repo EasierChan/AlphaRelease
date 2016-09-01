@@ -1,9 +1,9 @@
 import {app, BrowserWindow } from 'electron';
 import {SimpleClient} from './dal/SimpleClient';
 import {SimpleResolver} from './dal/SimpleResolver';
-import {Loader} from './common/loader';
+import {ULoader} from './common/loader';
 
-Loader.init();
+ULoader.init();
 /**
  * ready event
  */

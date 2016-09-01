@@ -3,7 +3,7 @@ var electron_1 = require('electron');
 var SimpleClient_1 = require('./dal/SimpleClient');
 var SimpleResolver_1 = require('./dal/SimpleResolver');
 var loader_1 = require('./common/loader');
-loader_1.Loader.init();
+loader_1.ULoader.init();
 /**
  * ready event
  */
