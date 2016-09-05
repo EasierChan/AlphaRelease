@@ -15,7 +15,7 @@ interface UAppSetting {
 
 interface UWindowSetting{
     left    :   number;
-    right   :   number;
+    top     :   number;
     width   :   number;
     height  :   number;
     other   :   any;

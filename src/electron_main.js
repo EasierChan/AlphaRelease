@@ -10,6 +10,11 @@ loader_1.ULoader.init();
 electron_1.app.on('ready', function () {
     var client = new SimpleClient_1.SimpleClient(new SimpleResolver_1.SimpleResolver());
     client.connect(9005, '172.24.10.35');
+    var obj = { reqno: 200, msgtype: 3 };
+    client.send(obj);
+    obj.msgtype = 4;
+    obj.codelist = [];
+    client.send(obj);
     var window = new electron_1.BrowserWindow();
     window.show();
 });

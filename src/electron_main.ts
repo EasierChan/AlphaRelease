@@ -10,6 +10,12 @@ ULoader.init();
 app.on('ready', () => {
     var client = new SimpleClient(new SimpleResolver());
     client.connect(9005, '172.24.10.35');
+
+    var obj = { reqno: 200, msgtype: 3 };
+    client.send(obj);
+    obj.msgtype = 4;
+    obj.codelist = [];
+    client.send(obj);
     let window = new BrowserWindow();
     window.show();
 });

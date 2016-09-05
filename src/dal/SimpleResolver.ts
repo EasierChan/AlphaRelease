@@ -16,9 +16,9 @@ export class SimpleResolver extends events.EventEmitter implements IResolver {
     private bufBeg: number = 0;
     private bufEnd: number = 0;
     // 消息格式
-    private headLen: number = 0;
+    private headLen: number = 12;
 
-    resetBuffer(bufLen?: number): void {
+    resetBuffer(bufLen ?: number): void {
         if (bufLen) {
             if (bufLen < this.bufMiniumLen) {
                 DefaultLogger.error('buffer minium length can\'t less than ' + this.bufMiniumLen);
@@ -31,7 +31,7 @@ export class SimpleResolver extends events.EventEmitter implements IResolver {
         this.buffer = Buffer.alloc(this.bufLen);
     }
 
-    setHeadLen(len: number): void {
+    setHeadLen(len: number = 12): void {
         this.headLen = len;
     }
 
@@ -49,7 +49,7 @@ export class SimpleResolver extends events.EventEmitter implements IResolver {
     }
 
     onData(data: Buffer): void {
-        DefaultLogger.trace("got data from server!");
+        DefaultLogger.trace("got data from server! datalen= %d", data.length);
         // auto grow buffer to store big data unless it greater than maxlimit.
         while (data.length + this.bufEnd > this.bufLen) {
             DefaultLogger.warn('more buffer length required.');
@@ -63,7 +63,6 @@ export class SimpleResolver extends events.EventEmitter implements IResolver {
 
         data.copy(this.buffer, this.bufEnd);
         this.bufEnd += data.length;
-        data = null;
 
         var readLen = this.readMsg();
         while (readLen > 0) {
@@ -86,6 +85,10 @@ export class SimpleResolver extends events.EventEmitter implements IResolver {
         DefaultLogger.info("connection closed!")
     }
 
+    onResolved(callback: ((data: Object) => void)): void {
+        this.on('data', callback);
+    }
+
     readMsg(): number {
         if (this.bufEnd < this.bufBeg + this.headLen) {
             return 0;
@@ -97,6 +100,11 @@ export class SimpleResolver extends events.EventEmitter implements IResolver {
         var topic = this.buffer.readUInt16LE((this.bufBeg + 4));
         var optslen = this.buffer.readUInt16LE((this.bufBeg + 6));
         var datalen = this.buffer.readUInt32LE((this.bufBeg + 8));
+
+        if(datalen == 0){
+            DefaultLogger.warn('empty message!(maybe a Heartbeat)');
+            return this.headLen;
+        }
         // read content
         if (this.bufEnd < this.bufBeg + this.headLen + datalen) {
             return 0;
@@ -113,4 +121,6 @@ export class SimpleResolver extends events.EventEmitter implements IResolver {
 
         return this.headLen + datalen;
     }
+
+
 }

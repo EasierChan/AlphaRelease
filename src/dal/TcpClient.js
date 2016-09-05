@@ -10,7 +10,7 @@ var TcpClient = (function () {
      * resolver: Resolver的实例
      */
     function TcpClient(resolver) {
-        this.resolver_ = resolver;
+        this.resolver = resolver;
     }
     /**
      * 连接
@@ -19,29 +19,29 @@ var TcpClient = (function () {
         var _this = this;
         if (ip === void 0) { ip = localhost; }
         logger_1.DefaultLogger.info("start to connect to " + ip + ":" + port + "...");
-        this.sock_ = null;
-        this.sock_ = net.connect(port, ip, function (e) {
-            _this.resolver_.onConnected(e);
+        this.sock = null;
+        this.sock = net.connect(port, ip, function (e) {
+            _this.resolver.onConnected(e);
         });
-        this.sock_.on('error', function (err) {
-            _this.resolver_.onError(err);
+        this.sock.on('error', function (err) {
+            _this.resolver.onError(err);
         });
-        this.sock_.on('data', function (data) {
-            _this.resolver_.onData(data);
+        this.sock.on('data', function (data) {
+            _this.resolver.onData(data);
         });
-        this.sock_.on('end', function () {
-            _this.resolver_.onEnd({ remoteAddr: _this.sock_.remoteAddress, remotePort: _this.sock_.remotePort });
+        this.sock.on('end', function () {
+            _this.resolver.onEnd({ remoteAddr: _this.sock.remoteAddress, remotePort: _this.sock.remotePort });
         });
-        this.sock_.on('close', function (had_error) {
-            _this.resolver_.onClose(had_error);
+        this.sock.on('close', function (had_error) {
+            _this.resolver.onClose(had_error);
         });
     };
     /**
      * 发送数据
      */
     TcpClient.prototype.send = function (data) {
-        if (this.sock_.writable) {
-            this.sock_.write(data);
+        if (this.sock.writable) {
+            this.sock.write(data);
             return;
         }
         logger_1.DefaultLogger.error('connection is not writable.');
@@ -50,8 +50,8 @@ var TcpClient = (function () {
      * 关闭连接
      */
     TcpClient.prototype.close = function () {
-        if (this.sock_.writable) {
-            this.sock_.end();
+        if (this.sock.writable) {
+            this.sock.end();
             return;
         }
     };

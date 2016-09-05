@@ -22,7 +22,7 @@ var SimpleResolver = (function (_super) {
         this.bufBeg = 0;
         this.bufEnd = 0;
         // 消息格式
-        this.headLen = 0;
+        this.headLen = 12;
         this.resetBuffer(bufLen);
     }
     SimpleResolver.prototype.resetBuffer = function (bufLen) {
@@ -38,6 +38,7 @@ var SimpleResolver = (function (_super) {
         this.buffer = Buffer.alloc(this.bufLen);
     };
     SimpleResolver.prototype.setHeadLen = function (len) {
+        if (len === void 0) { len = 12; }
         this.headLen = len;
     };
     SimpleResolver.prototype.onConnected = function (arg) {
@@ -47,7 +48,7 @@ var SimpleResolver = (function (_super) {
         logger_1.DefaultLogger.info(err);
     };
     SimpleResolver.prototype.onData = function (data) {
-        logger_1.DefaultLogger.trace("got data from server!");
+        logger_1.DefaultLogger.trace("got data from server! datalen= %d", data.length);
         // auto grow buffer to store big data unless it greater than maxlimit.
         while (data.length + this.bufEnd > this.bufLen) {
             logger_1.DefaultLogger.warn('more buffer length required.');
@@ -60,7 +61,6 @@ var SimpleResolver = (function (_super) {
         }
         data.copy(this.buffer, this.bufEnd);
         this.bufEnd += data.length;
-        data = null;
         var readLen = this.readMsg();
         while (readLen > 0) {
             this.bufBeg += readLen;
@@ -77,6 +77,9 @@ var SimpleResolver = (function (_super) {
     SimpleResolver.prototype.onClose = function (arg) {
         logger_1.DefaultLogger.info("connection closed!");
     };
+    SimpleResolver.prototype.onResolved = function (callback) {
+        this.on('data', callback);
+    };
     SimpleResolver.prototype.readMsg = function () {
         if (this.bufEnd < this.bufBeg + this.headLen) {
             return 0;
@@ -88,6 +91,10 @@ var SimpleResolver = (function (_super) {
         var topic = this.buffer.readUInt16LE((this.bufBeg + 4));
         var optslen = this.buffer.readUInt16LE((this.bufBeg + 6));
         var datalen = this.buffer.readUInt32LE((this.bufBeg + 8));
+        if (datalen == 0) {
+            logger_1.DefaultLogger.warn('empty message!(maybe a Heartbeat)');
+            return this.headLen;
+        }
         // read content
         if (this.bufEnd < this.bufBeg + this.headLen + datalen) {
             return 0;
