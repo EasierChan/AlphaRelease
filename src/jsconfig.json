@@ -3,9 +3,5 @@
         "target": "ES6",
         "module": "commonjs"
     },
-    "files": [
-        "common/typings/globals/node/index.d.ts",
-        "common/typings/globals/github-electron/index.d.ts"
-    ],
     "typings": "common/typings/"
 }

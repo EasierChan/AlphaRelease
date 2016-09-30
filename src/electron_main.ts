@@ -1,7 +1,8 @@
-import {app, BrowserWindow } from 'electron';
+import {app} from 'electron';
 import {SimpleClient} from './dal/SimpleClient';
 import {SimpleResolver} from './dal/SimpleResolver';
-import {ULoader} from './common/loader';
+import {ULoader} from './common/base/loader';
+import {MenuWindow} from './common/app/windows';
 
 ULoader.init();
 /**
@@ -13,9 +14,14 @@ app.on('ready', () => {
 
     var obj = { reqno: 200, msgtype: 3 };
     client.send(obj);
-    obj.msgtype = 4;
-    obj.codelist = [];
-    client.send(obj);
-    let window = new BrowserWindow();
-    window.show();
+
+    let window: MenuWindow = new MenuWindow({ state: { x: 100, y: 100, width: 300, height: 300, wStyle: 0 }});
+    window.loadURL('sample.html');
+    // window.show();
+    // let showTimeoutHandler = setTimeout(function () {
+    //     window.win.flashFrame(true);
+    //     setTimeout(function () {
+    //         window.win.flashFrame(false);
+    //     }, 5000);
+    // }, 2000);
 });

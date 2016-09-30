@@ -1,6 +1,6 @@
-import {IResolver} from './IResolver';
+import {IResolver} from '../common/base/resolver';
 import events = require('events');
-import {DefaultLogger} from '../common/logger';
+import {DefaultLogger} from '../common/base/logger';
 /**
  * SimpleResover extends Resolver
  */

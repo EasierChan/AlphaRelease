@@ -1,6 +1,6 @@
-import {IResolver}  from './IResolver';
-import {TcpClient} from './TcpClient';
-import {DefaultLogger} from '../common/logger';
+import {IResolver}  from '../common/base/resolver';
+import {TcpClient} from '../common/base/client';
+import {DefaultLogger} from '../common/base/logger';
 
 /**
  * QtpMessageClient
@@ -8,7 +8,6 @@ import {DefaultLogger} from '../common/logger';
 export class SimpleClient extends TcpClient {
     public constructor(resolver: IResolver) {
         super(resolver);
-        this.resolver.onResolved(this.onReceived);
     }
 
     send(data: any): void {

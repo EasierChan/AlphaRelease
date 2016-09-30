@@ -2,7 +2,8 @@
 var electron_1 = require('electron');
 var SimpleClient_1 = require('./dal/SimpleClient');
 var SimpleResolver_1 = require('./dal/SimpleResolver');
-var loader_1 = require('./common/loader');
+var loader_1 = require('./common/base/loader');
+var windows_1 = require('./common/app/windows');
 loader_1.ULoader.init();
 /**
  * ready event
@@ -12,9 +13,13 @@ electron_1.app.on('ready', function () {
     client.connect(9005, '172.24.10.35');
     var obj = { reqno: 200, msgtype: 3 };
     client.send(obj);
-    obj.msgtype = 4;
-    obj.codelist = [];
-    client.send(obj);
-    var window = new electron_1.BrowserWindow();
-    window.show();
+    var window = new windows_1.MenuWindow({ state: { x: 100, y: 100, width: 300, height: 300, wStyle: 0 } });
+    window.loadURL('sample.html');
+    // window.show();
+    // let showTimeoutHandler = setTimeout(function () {
+    //     window.win.flashFrame(true);
+    //     setTimeout(function () {
+    //         window.win.flashFrame(false);
+    //     }, 5000);
+    // }, 2000);
 });

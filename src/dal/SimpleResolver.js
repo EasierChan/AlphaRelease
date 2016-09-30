@@ -5,7 +5,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 var events = require('events');
-var logger_1 = require('../common/logger');
+var logger_1 = require('../common/base/logger');
 /**
  * SimpleResover extends Resolver
  */

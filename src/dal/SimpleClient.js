@@ -4,8 +4,8 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-var TcpClient_1 = require('./TcpClient');
-var logger_1 = require('../common/logger');
+var client_1 = require('../common/base/client');
+var logger_1 = require('../common/base/logger');
 /**
  * QtpMessageClient
  */
@@ -13,7 +13,6 @@ var SimpleClient = (function (_super) {
     __extends(SimpleClient, _super);
     function SimpleClient(resolver) {
         _super.call(this, resolver);
-        this.resolver.onResolved(this.onReceived);
     }
     SimpleClient.prototype.send = function (data) {
         logger_1.DefaultLogger.debug(data);
@@ -38,5 +37,5 @@ var SimpleClient = (function (_super) {
         logger_1.DefaultLogger.info(data);
     };
     return SimpleClient;
-}(TcpClient_1.TcpClient));
+}(client_1.TcpClient));
 exports.SimpleClient = SimpleClient;
