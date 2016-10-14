@@ -3,5 +3,5 @@
         "target": "ES6",
         "module": "commonjs"
     },
-    "typings": "common/typings/"
+    "typings": "src/typings/"
 }

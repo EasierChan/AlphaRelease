@@ -14,6 +14,9 @@ electron_1.app.on('ready', function () {
     var obj = { reqno: 200, msgtype: 3 };
     client.send(obj);
     var window = new windows_1.MenuWindow({ state: { x: 100, y: 100, width: 300, height: 300, wStyle: 0 } });
+    window.ready().then(function () {
+        console.log("i'm ready");
+    });
     window.loadURL('sample.html');
     // window.show();
     // let showTimeoutHandler = setTimeout(function () {

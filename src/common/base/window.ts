@@ -7,7 +7,7 @@
 import * as path from 'path';
 import * as objects from 'lodash';
 import { shell, screen, BrowserWindow, Menu } from 'electron';
-import { TPromise, TValueCallback } from './common';
+import { TValueCallback } from './common';
 import * as platform from './platform';
 import * as jsdom from 'jsdom';
 import {DefaultLogger} from './logger';
@@ -197,8 +197,8 @@ export class UWindow {
 		}
 	}
 
-	public ready(): PromiseLike<UWindow> {
-		return new TPromise<UWindow>((c) => {
+	public ready(): Promise<UWindow> {
+		return new Promise<UWindow>((c) => {
 			if (this._readyState === ReadyState.READY) {
 				return c(this);
 			}

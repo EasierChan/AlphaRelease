@@ -3,7 +3,6 @@
  */
 'use strict';
 var electron_1 = require('electron');
-var common_1 = require('./common');
 var platform = require('./platform');
 var logger_1 = require('./logger');
 (function (WindowStyle) {
@@ -147,7 +146,7 @@ var UWindow = (function () {
     };
     UWindow.prototype.ready = function () {
         var _this = this;
-        return new common_1.TPromise(function (c) {
+        return new Promise(function (c) {
             if (_this._readyState === ReadyState.READY) {
                 return c(_this);
             }

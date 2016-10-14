@@ -30,3 +30,4 @@ export class MenuWindow extends UWindow {
         super(config);
     }	
 }
+

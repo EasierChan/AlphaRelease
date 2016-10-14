@@ -57,7 +57,7 @@ var TcpClient = (function () {
         }
     };
     TcpClient.prototype.onReceived = function (data) {
-        logger_1.DefaultLogger.info(data);
+        //DefaultLogger.info(data);
     };
     return TcpClient;
 }());

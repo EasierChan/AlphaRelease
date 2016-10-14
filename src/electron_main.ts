@@ -16,6 +16,9 @@ app.on('ready', () => {
     client.send(obj);
 
     let window: MenuWindow = new MenuWindow({ state: { x: 100, y: 100, width: 300, height: 300, wStyle: 0 }});
+    window.ready().then(function(){
+        console.log("i'm ready"); 
+    })
     window.loadURL('sample.html');
     // window.show();
     // let showTimeoutHandler = setTimeout(function () {
