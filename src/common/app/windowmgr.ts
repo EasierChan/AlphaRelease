@@ -2,7 +2,7 @@
  * manager the windows
  */
 import {UWindow, IWindowCreationOptions, WindowStyle} from '../base/window';
-import {MenuWindow} from './windows';
+import {MenuWindow, MenuPath} from './windows';
 
 interface Bounds {
     x: number;
@@ -12,53 +12,47 @@ interface Bounds {
 }
 
 export class UWindwManager {
-    private _windows: Array<UWindow>;
-    private _menuWindow: MenuWindow;
+    private static _windows: Array<UWindow> = [];
+    private static _menuWindow: MenuWindow = null;
 
     constructor() {
 
     }
 
-    addMenuWindow(bound: Bounds): void {
+    static addMenuWindow(menuWindow: MenuWindow): void {
         if (!this._menuWindow) {
-            this._menuWindow = new MenuWindow({
-                state: {
-                    x: bound.x,
-                    y: bound.y,
-                    width: bound.width || 300,
-                    height: bound.height || 300,
-                    wStyle: WindowStyle.System
-                },
-                viewUrl: 'sample.html'
-            });
+            this._menuWindow = menuWindow;
             this._windows.push(this._menuWindow);
         }
     }
     /**
      * @description 添加菜单
      * @param window an instance of UWindow.
-     * @param presentItem item's presentation on MenuWindow, it supports 
-     * @param fatherItem presentItem attached to.
+     * @param presentName item's presentation on MenuWindow, it supports 
+     * @param fatherPath presentItem attached to.
      */
-    addWindowToMenu(window: UWindow, presentItem: Object, fatherItem: string): void {
-
+    static addWindowToMenu(window: UWindow, presentItem: string, fatherPath: MenuPath): void {
+        this._menuWindow.insertMenu(fatherPath, presentItem, ()=>{
+            window.show();
+        });
+        this._windows.push(window);
     }
     /**
      * @description 广播消息
      */
-    broadcastMessage(message: Object): void {
+    static broadcastMessage(message: Object): void {
 
     }
     /**
      * @description 发消息至某个窗口
      */
-    sendMessage(windowItem: Object, message: Object): void {
+    static sendMessage(windowItem: Object, message: Object): void {
 
     }
     /**
      * @description 关闭所有窗口
      */
-    closeAll(): void {
+    static closeAll(): void {
 
     }
 }

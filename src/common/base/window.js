@@ -22,7 +22,7 @@ exports.defaultWindowState = function (mode) {
     return {
         width: 1024,
         height: 768,
-        wStyle: WindowStyle.Aqy,
+        wStyle: WindowStyle.System,
         mode: mode
     };
 };
@@ -63,6 +63,7 @@ var UWindow = (function () {
             minHeight: UWindow.MIN_HEIGHT,
             show: false,
             useContentSize: true,
+            autoHideMenuBar: true,
             //title: this.envService.product.nameLong,
             webPreferences: {
                 'backgroundThrottling': false // by default if Code is in the background, intervals and timeouts get throttled
@@ -96,11 +97,8 @@ var UWindow = (function () {
     UWindow.prototype.setMenu = function (menuTemplate) {
         try {
             if (Array.isArray(menuTemplate)) {
-                var menu = electron_1.Menu.buildFromTemplate(menuTemplate);
-                this.win.setMenu(menu);
-            }
-            else {
-                this.win.setMenu(menuTemplate);
+                this._menu = electron_1.Menu.buildFromTemplate(menuTemplate);
+                this.win.setMenu(this._menu);
             }
         }
         catch (err) {
@@ -167,14 +165,14 @@ var UWindow = (function () {
         this._win.webContents.on('did-finish-load', function () {
             _this._readyState = ReadyState.LOADING;
             // To prevent flashing, we set the window visible after the page has finished to load but before VSCode is loaded
-            if (!_this.win.isVisible()) {
-                if (_this.currentWindowMode === WindowMode.Maximized) {
-                    _this.win.maximize();
-                }
-                if (!_this.win.isVisible()) {
-                    _this.win.show();
-                }
-            }
+            // if (!this.win.isVisible()) {
+            // 	if (this.currentWindowMode === WindowMode.Maximized) {
+            // 		this.win.maximize();
+            // 	}
+            // 	if (!this.win.isVisible()) { // maximize also makes visible
+            // 		this.win.show();
+            // 	}
+            // }
             // ready
             logger_1.DefaultLogger.info("window#%d is ready!", _this.id);
             _this.setReady();
@@ -203,7 +201,9 @@ var UWindow = (function () {
             this.win.webContents.executeJavaScript("window.document.getElementById('fr_content').src = '../../ui/view/" + contentUrl + "';");
         }
         else {
-            this.setMenuBarVisibility(true);
+            if (this.options.menuTemplate) {
+                this.setMenuBarVisibility(true);
+            }
             this.win.loadURL(__dirname + '/../../ui/view/' + contentUrl);
         }
         //this.win.webContents.reloadIgnoringCache();

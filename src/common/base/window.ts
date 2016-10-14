@@ -9,7 +9,6 @@ import * as objects from 'lodash';
 import { shell, screen, BrowserWindow, Menu } from 'electron';
 import { TValueCallback } from './common';
 import * as platform from './platform';
-import * as jsdom from 'jsdom';
 import {DefaultLogger} from './logger';
 
 export interface IWindowState {
@@ -44,7 +43,7 @@ export const defaultWindowState = function (mode = WindowMode.Normal): IWindowSt
 	return {
 		width: 1024,
 		height: 768,
-		wStyle: WindowStyle.Aqy,
+		wStyle: WindowStyle.System,
 		mode: mode
 	};
 };
@@ -78,6 +77,7 @@ export class UWindow {
 	private _win: Electron.BrowserWindow;
 	private _lastFocusTime: number;
 	private _readyState: ReadyState;
+	private _menu: Electron.Menu;
 	private windowState: IWindowState;
 	private currentWindowMode: WindowMode;
 	// ...
@@ -111,6 +111,7 @@ export class UWindow {
 			minHeight: UWindow.MIN_HEIGHT,
 			show: false,//!isFullscreenOrMaximized,
 			useContentSize: true,
+			autoHideMenuBar: true,
 			//title: this.envService.product.nameLong,
 			webPreferences: {
 				'backgroundThrottling': false // by default if Code is in the background, intervals and timeouts get throttled
@@ -146,7 +147,6 @@ export class UWindow {
 		if (this.options.menuTemplate) {
 			this.setMenu(config.menuTemplate);
 		}
-
 		// this.registerListeners();
 		this.loadURL(this.options.viewUrl);
 	}
@@ -154,10 +154,8 @@ export class UWindow {
 	public setMenu(menuTemplate: any): void {
 		try {
 			if (Array.isArray(menuTemplate)) {
-				const menu = Menu.buildFromTemplate(menuTemplate);
-				this.win.setMenu(menu);
-			} else {
-				this.win.setMenu(menuTemplate);
+				this._menu = Menu.buildFromTemplate(menuTemplate);
+				this.win.setMenu(this._menu);
 			}
 		} catch (err) {
 			DefaultLogger.error(err);
@@ -220,16 +218,16 @@ export class UWindow {
 			this._readyState = ReadyState.LOADING;
 
 			// To prevent flashing, we set the window visible after the page has finished to load but before VSCode is loaded
-			if (!this.win.isVisible()) {
+			// if (!this.win.isVisible()) {
 
-				if (this.currentWindowMode === WindowMode.Maximized) {
-					this.win.maximize();
-				}
+			// 	if (this.currentWindowMode === WindowMode.Maximized) {
+			// 		this.win.maximize();
+			// 	}
 
-				if (!this.win.isVisible()) { // maximize also makes visible
-					this.win.show();
-				}
-			}
+			// 	if (!this.win.isVisible()) { // maximize also makes visible
+			// 		this.win.show();
+			// 	}
+			// }
 			// ready
 			DefaultLogger.info("window#%d is ready!", this.id);
 			this.setReady();
@@ -265,7 +263,9 @@ export class UWindow {
 			this.win.loadURL(__dirname + '/titlebar.tpl');
 			this.win.webContents.executeJavaScript("window.document.getElementById('fr_content').src = '../../ui/view/" + contentUrl + "';");
 		} else {
-			this.setMenuBarVisibility(true);
+			if(this.options.menuTemplate){
+				this.setMenuBarVisibility(true);
+			}
 			this.win.loadURL(__dirname + '/../../ui/view/' + contentUrl);
 		}
 		//this.win.webContents.reloadIgnoringCache();

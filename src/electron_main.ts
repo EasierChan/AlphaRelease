@@ -2,9 +2,11 @@ import {app} from 'electron';
 import {SimpleClient} from './dal/SimpleClient';
 import {SimpleResolver} from './dal/SimpleResolver';
 import {ULoader} from './common/base/loader';
-import {MenuWindow} from './common/app/windows';
+import {UApplication} from './common/app/application';
 
 ULoader.init();
+
+Promise
 /**
  * ready event
  */
@@ -15,11 +17,7 @@ app.on('ready', () => {
     var obj = { reqno: 200, msgtype: 3 };
     client.send(obj);
 
-    let window: MenuWindow = new MenuWindow({ state: { x: 100, y: 100, width: 300, height: 300, wStyle: 0 }});
-    window.ready().then(function(){
-        console.log("i'm ready"); 
-    })
-    window.loadURL('sample.html');
+    UApplication.bootstrapUIContainer();
     // window.show();
     // let showTimeoutHandler = setTimeout(function () {
     //     window.win.flashFrame(true);
@@ -28,3 +26,7 @@ app.on('ready', () => {
     //     }, 5000);
     // }, 2000);
 });
+
+app.on('window-all-closed', () => {
+    app.quit();
+})

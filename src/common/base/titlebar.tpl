@@ -68,7 +68,7 @@
     <script>
         const remote = require('electron').remote;
         function closeMe(){
-            remote.app.quit();
+            remote.getCurrentWindow().close();
         }
         
         function minimalMe(){
