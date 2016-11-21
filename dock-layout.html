@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <title>Dock-layout UI</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="utf8">
+    <style>
+        * {
+            margin: 0;
+            border: 0;
+            padding: 0;
+        }
+        
+        html,
+        body {
+            height: 100%;
+        }
+        
+        .dock-container {
+            /*display: flex;*/
+            background-color: #000000;
+            color: #fff;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .vertical {
+            float: left;
+            height: 100%;
+        }
+        
+        .horizental {
+            width: 100%;
+        }
+        
+        .splitter-bar {
+            /*flex: 0 0 5px;*/
+            /*float: left;*/
+            background-color: red;
+        }
+        
+        .splitter-bar.vertical {
+            /*flex: 1 1 auto;*/
+            width: 5px;
+            cursor: col-resize;
+        }
+        
+        .splitter-bar.horizental {
+            height: 5px;
+            cursor: row-resize;
+        }
+        
+        .dock-container.horizental {
+            height: 200px;
+        }
+        
+        .dock-container.vertical {
+            width: 300px;
+        }
+        
+
+        .vbox{
+            display: flex;
+            width: 100%;
+            height: 100%;
+            flex-direction: column;
+        }
+
+        .vbox > .tab-content-list{
+            flex: 1 1 auto;
+            background-color: #1e1e1e;
+        }
+
+        .tab-content:not(.active) {
+            display: none;
+        }
+        .tab-title{
+            height: 25px;
+            padding-left: 5px;
+            background-color: grey;
+            overflow: hidden;
+            white-space: nowrap;
+            -webkit-user-select: none;
+            cursor: default;
+        }
+        .tab-body{
+            
+        }
+        .vbox > .tab-seperator{
+            flex: 0 0 2px;
+            background-color: chocolate;
+        }
+        .vbox > .tab-header-list {
+            flex: 0 0 25px;
+            background-color: #252526;
+            display: flex;
+        }
+
+        .tab-header-list > .tab {
+            flex: none;
+            height: 20px;
+            min-width: fit-content;
+            width: 100px;
+            padding-left: 5px;
+            border: 1px solid transparent;
+            cursor: pointer;
+        }
+        .tab-header-list > .tab.active {
+            background-color: chocolate;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="root" class="dock-container vertical" style="width: 100%; height:100%;">
+        <div class="dock-container horizental">
+            <div class="dock-container vertical">
+                <div class="vbox">
+                    <div class="tab-content-list">
+                        <div id="Toolbox" class="tab-content active">
+                            <div class="tab-title">Toolbox</div>
+                            <div class="tab-body"></div>
+                        </div>
+                        <div id="Servers" class="tab-content">
+                            <div class="tab-title">Servers</div>
+                            <div class="tab-body"></div>
+                        </div>
+                    </div>
+                    <div class="tab-seperator"></div>
+                    <div class="tab-header-list">
+                        <div data-target="Toolbox" class="tab active">
+                            Toolbox
+                        </div>
+                        <div data-target="Servers" class="tab" data>
+                            Servers
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="splitter-bar vertical">
+            </div>
+
+            <div class="dock-container vertical">
+                <span>World</span>
+            </div>
+
+            <div class="splitter-bar vertical">
+            </div>
+
+            <div class="dock-container vertical">
+                <div class="vbox">
+                    <div class="tab-content-list">
+                        <div id="Output" class="tab-content active">
+                            <div class="tab-title">Output</div>
+                            <div class="tab-body"></div>
+                        </div>
+                        <div id="Solution" class="tab-content">
+                            <div class="tab-title">Solution</div>
+                            <div class="tab-body"></div>
+                        </div>
+                    </div>
+                    <div class="tab-seperator"></div>
+                    <div class="tab-header-list">
+                        <div data-target="Output" class="tab active">
+                            Output
+                        </div>
+                        <div data-target="Solution" class="tab">
+                            Solution
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="splitter-bar horizental">
+        </div>
+        <div class="dock-container horizental">
+
+            <div class="dock-container vertical">
+
+            </div>
+
+            <div class="splitter-bar vertical">
+            </div>
+
+            <div class="dock-container vertical">
+                <span>World</span>
+            </div>
+
+            <div class="splitter-bar vertical">
+            </div>
+
+            <div class="dock-container vertical">
+                <span>Kitty</span>
+            </div>
+        </div>
+    </div>
+
+    <script src="./jquery-3.1.1.js"></script>
+    <script>
+    $(document).ready(function(){
+        $(".splitter-bar").attr("draggable", "true");
+        $(".splitter-bar").on("dragstart", (function(e){
+            // if($(this).is(".vertical")){
+            //     console.log(e.pageX, e.pageY);
+            //     $(this).data("oldval", e.pageX);
+            // } else {
+            //     $(this).data("oldval", e.pageY);
+            // }
+        }));
+        $(".splitter-bar").on("dragend", (function(e){
+            var gap;
+            if($(this).is(".vertical")){
+                gap = e.pageX - $(this).offset().left;
+                $(this).prev(".dock-container").outerWidth($(this).prev(".dock-container").outerWidth() + gap);
+                $(this).next(".dock-container").outerWidth($(this).next(".dock-container").outerWidth() - gap);
+            } else {
+                gap = e.pageY - $(this).offset().top;
+                $(this).prev(".dock-container").outerHeight($(this).prev(".dock-container").outerHeight() + gap);
+                $(this).next(".dock-container").outerHeight($(this).next(".dock-container").outerHeight() - gap);
+            }
+        }));
+
+        $(".dock-container").on("dragover", (function(e){
+            e.preventDefault();
+        }))
+        $(".dock-container").on("drop", (function(e){
+            e.preventDefault();
+        }));
+
+        var splitterbarWH = 5;
+        function reallocChildSize($parent, childSelector){
+            var childrens = $parent.children(childSelector);
+            if(childrens.length == 0){
+                return;
+            }
+            var atrrName = childSelector.indexOf(".vertical") > 0 ? "outerWidth" : "outerHeight";
+            var childrenTotalWH = 0;
+            childrens.each(function(){
+                childrenTotalWH += $(this)[atrrName]();
+            });
+
+            var parentWH = $parent[atrrName]();
+            console.log(parentWH, childrenTotalWH);
+            var diff = parentWH - childrenTotalWH - (childrens.length - 1) * splitterbarWH;
+            var zoomRate = parentWH / (parentWH-diff); //container zoom rate.
+            childrens.each(function(i){
+                if(i === childrens.length - 1){ //last child
+                    $(this)[atrrName]($(this)[atrrName]() + diff);
+                } else {
+                    diff -= parseInt($(this)[atrrName]() * (zoomRate - 1));
+                    $(this)[atrrName](parseInt($(this)[atrrName]()*zoomRate));
+                }
+
+                if(atrrName === "outerWidth")
+                    reallocChildSize($(this), ".dock-container.horizental");
+                else
+                    reallocChildSize($(this), ".dock-container.vertical");
+            });
+
+            zoomRate = null;
+            diff = null;
+            parentWH = null;
+            childrens = null;
+            childrenTotalWH = null;
+        };
+
+        
+        $(window).resize(function(){
+            reallocChildSize($("#root"), ".dock-container.horizental");
+        });
+
+        $(".tab-header-list .tab").click(function(){
+            if($(this).hasClass('active'))
+                return;
+            var id = $(this).data("target");
+            $(this).addClass('active');
+            $(this).siblings().removeClass('active');
+            $('#'+id).siblings().removeClass('active');
+            $('#'+id).addClass('active');
+        });
+
+        
+        reallocChildSize($("#root"), ".dock-container.horizental");
+    });
+    </script>
+</body>
+
+</html>
