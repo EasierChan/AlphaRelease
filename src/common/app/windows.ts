@@ -43,6 +43,8 @@ export class MenuWindow extends UWindow {
         UWindow.MIN_HEIGHT = 30;
         super(config);
         this._defaultTemplate = config.menuTemplate;
+
+        this.build();
     }
 
     public insertMenu(pos: MenuPath, name: string, clickCallback: () => void): void {

@@ -22,6 +22,9 @@ export class UWindwManager {
     static addMenuWindow(menuWindow: MenuWindow): void {
         if (!this._menuWindow) {
             this._menuWindow = menuWindow;
+            this._menuWindow.onClosed = ()=>{
+                UWindwManager.closeAll();
+            }
             this._windows.push(this._menuWindow);
         }
     }
@@ -53,7 +56,9 @@ export class UWindwManager {
      * @description 关闭所有窗口
      */
     static closeAll(): void {
-
+        this._windows.forEach(function(window){
+            window.close();
+        })
     }
 }
 

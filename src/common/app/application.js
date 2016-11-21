@@ -10,7 +10,7 @@ var UApplication = (function () {
     UApplication.bootstrapUIContainer = function () {
         var menuWindow = new windows_1.MenuWindow({ state: { width: 300, height: 60 } });
         menuWindow.ready().then(function () {
-            console.log("i'm MenuWindow");
+            console.log("when MenuWindow ready say: hello");
         });
         menuWindow.loadURL('sample.html');
         windowmgr_1.UWindwManager.addMenuWindow(menuWindow);
@@ -18,6 +18,9 @@ var UApplication = (function () {
         contentWindow.loadURL('sample.html');
         windowmgr_1.UWindwManager.addWindowToMenu(contentWindow, 'test', { level1: 2 });
         menuWindow.show();
+    };
+    UApplication.quit = function () {
+        windowmgr_1.UWindwManager.closeAll();
     };
     return UApplication;
 }());

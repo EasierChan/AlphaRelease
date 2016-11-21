@@ -5,12 +5,14 @@ import {ULoader} from './common/base/loader';
 import {UApplication} from './common/app/application';
 
 ULoader.init();
-
-Promise
 /**
  * ready event
  */
 app.on('ready', () => {
+    console.log("node: ", process.versions.node);
+    console.log("electron: ", process.versions.electron);
+    console.log("chrome: ", process.versions.chrome);
+
     var client = new SimpleClient(new SimpleResolver());
     client.connect(9005, '172.24.10.35');
 

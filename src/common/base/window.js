@@ -93,6 +93,7 @@ var UWindow = (function () {
         }
         // this.registerListeners();
         this.loadURL(this.options.viewUrl);
+        this.build();
     }
     UWindow.prototype.setMenu = function (menuTemplate) {
         try {
@@ -210,6 +211,10 @@ var UWindow = (function () {
     };
     UWindow.prototype.show = function () {
         this.win.show();
+    };
+    UWindow.prototype.close = function () {
+        if (this.win != null && !this.win.isVisible())
+            this.win.close();
     };
     UWindow.prototype.serializeWindowState = function () {
         if (this.win.isFullScreen()) {
@@ -360,6 +365,15 @@ var UWindow = (function () {
         }
         (_a = this._win.webContents).send.apply(_a, [channel].concat(args));
         var _a;
+    };
+    UWindow.prototype.build = function () {
+        var _this = this;
+        this._win.on('closed', function () {
+            _this.dispose();
+            if (_this.onClosed) {
+                _this.onClosed();
+            }
+        });
     };
     UWindow.prototype.dispose = function () {
         if (this.showTimeoutHandle) {

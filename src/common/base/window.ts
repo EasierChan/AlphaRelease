@@ -67,6 +67,7 @@ export class UWindow {
 
 	public static menuBarHiddenKey = 'menuBarHidden';
 	public static colorThemeStorageKey = 'theme';
+	public onClosed: ()=>void; 
 
 	protected static MIN_WIDTH = 300;
 	protected static MIN_HEIGHT = 120;
@@ -149,6 +150,7 @@ export class UWindow {
 		}
 		// this.registerListeners();
 		this.loadURL(this.options.viewUrl);
+		this.build();
 	}
 
 	public setMenu(menuTemplate: any): void {
@@ -273,6 +275,11 @@ export class UWindow {
 
 	public show(): void {
 		this.win.show();
+	}
+
+	public close(): void {
+		if(this.win != null && !this.win.isVisible())
+			this.win.close();
 	}
 
 	public serializeWindowState(): IWindowState {
@@ -446,6 +453,16 @@ export class UWindow {
 
 	public send(channel: string, ...args: any[]): void {
 		this._win.webContents.send(channel, ...args);
+	}
+
+
+	public build() : void {
+		this._win.on('closed', () => {
+			this.dispose();
+			if(this.onClosed){
+				this.onClosed();
+			}
+		})
 	}
 
 	public dispose(): void {

@@ -40,6 +40,7 @@ var MenuWindow = (function (_super) {
         window_1.UWindow.MIN_HEIGHT = 30;
         _super.call(this, config);
         this._defaultTemplate = config.menuTemplate;
+        this.build();
     }
     MenuWindow.prototype.insertMenu = function (pos, name, clickCallback) {
         if (pos.level1 >= this._defaultTemplate.length || pos.level1 < 0) {

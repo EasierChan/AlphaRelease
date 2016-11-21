@@ -12,7 +12,7 @@ export class UApplication {
     public static bootstrapUIContainer(): void{
         let menuWindow: MenuWindow = new MenuWindow({ state: {  width: 300, height: 60}});
         menuWindow.ready().then(function(){
-            console.log("i'm MenuWindow");
+            console.log("when MenuWindow ready say: hello");
         });
         menuWindow.loadURL('sample.html');
         UWindwManager.addMenuWindow(menuWindow);
@@ -22,5 +22,9 @@ export class UApplication {
         UWindwManager.addWindowToMenu(contentWindow, 'test', {level1: 2});
 
         menuWindow.show();
+    }
+
+    public static quit() : void {
+        UWindwManager.closeAll();
     }
 }
